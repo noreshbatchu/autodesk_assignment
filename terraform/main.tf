@@ -212,12 +212,10 @@ resource "aws_instance" "jenkins" {
   }
 }
 
-# Output the public IP of the Jenkins server
 output "jenkins_public_ip" {
   value = aws_instance.jenkins.public_ip
 }
 
-# Output the DNS name of the Load Balancer
 output "load_balancer_dns" {
   value = aws_lb.ecs_lb.dns_name
 }
