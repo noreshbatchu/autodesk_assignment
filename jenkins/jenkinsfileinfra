@@ -1,0 +1,50 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_REGION = 'us-east-1'
+        AWS_ACCOUNT_ID = '904529597796'  // Replace with your AWS Account ID
+        TF_VAR_s3_bucket = 'your-terraform-state-bucket'  // Replace with your S3 bucket name
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/noreshbatchu/autodesk-assignment.git'  // Replace with your repository URL
+            }
+        }
+
+        stage('Terraform Init') {
+            steps {
+                dir('terraform') {
+                    sh 'terraform init -backend-config="bucket=${TF_VAR_s3_bucket}"'
+                }
+            }
+        }
+
+        stage('Terraform Plan') {
+            steps {
+                dir('terraform') {
+                    sh 'terraform plan'
+                }
+            }
+        }
+
+        stage('Terraform Apply') {
+            steps {
+                dir('terraform') {
+                    sh 'terraform apply -auto-approve'
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Infrastructure Provisioning successful!'
+        }
+        failure {
+            echo 'Infrastructure Provisioning failed!'
+        }
+    }
+}
