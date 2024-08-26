@@ -196,22 +196,6 @@ resource "aws_lb_listener" "ecs_listener" {
   }
 }
 
-# EC2 Instance for Jenkins (without user_data)
-resource "aws_instance" "jenkins" {
-  ami           = "ami-066784287e358dad1"  # Ubuntu Server 20.04 LTS
-  instance_type = "t2.medium"
-  key_name      = "linkp"  # Replace with your actual key pair name
-
-  vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
-  subnet_id              = aws_subnet.public_subnet_1.id
-
-  associate_public_ip_address = true
-
-  tags = {
-    Name = "Jenkins-Server"
-  }
-}
-
 # Output the public IP of the Jenkins server
 output "jenkins_public_ip" {
   value = aws_instance.jenkins.public_ip
